@@ -1,5 +1,7 @@
 # Vite Bug: Externalized import inlined in HTML
 
+Vite issue: https://github.com/vitejs/vite/issues/20053
+
 ## Reproduction
 
 1. Clone the repository:
@@ -21,7 +23,8 @@
    npx vite build
    ```
 
-4. Open dist/index.html in text editor and see the following:
+4. Open [dist/index.html](./dist/index.html) in text editor and see the
+   following:
 
    ```html
    <script type="importmap">
@@ -51,3 +54,15 @@
    </script>
    <script type="module" crossorigin src="/assets/main-By8reOiR.js"></script>
    ```
+
+To the best of my knowledge, the bug occurs here:
+https://github.com/vitejs/vite/blob/0d18fc1dc65f5c8d855808f23754c0c4902f07d9/packages/vite/src/node/plugins/html.ts#L916-L919.
+That code should be modified to not inline the externalized modules
+
+The code below it is handling this correctly:
+https://github.com/vitejs/vite/blob/0d18fc1dc65f5c8d855808f23754c0c4902f07d9/packages/vite/src/node/plugins/html.ts#L927-L928
+
+Related changes:
+
+- https://github.com/vitejs/vite/pull/18618
+- https://github.com/vitejs/vite/pull/4555
